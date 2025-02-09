@@ -1,0 +1,55 @@
+<h1>Lista de Productos</h1>
+<ul id="product-list">
+  {{#each products}}
+    <li>
+      <a href="/products/{{this._id}}">{{this.name}} - {{this.type}}</a>
+      <button onclick="addToCart('{{this._id}}')">Agregar al carrito</button>
+    </li>
+  {{/each}}
+</ul>
+
+<form id="add-product-form">
+  <input type="text" name="name" placeholder="Nombre del producto" required>
+  <input type="text" name="type" placeholder="Tipo de producto" required>
+  <input type="number" name="price" placeholder="Precio" required>
+  <input type="text" name="category" placeholder="Categoría" required>
+  <select name="available">
+    <option value="true">Disponible</option>
+    <option value="false">No disponible</option>
+  </select>
+  <button type="submit">Agregar Producto</button>
+</form>
+
+<div>
+  {{#if hasPrevPage}}
+    <a href="{{prevLink}}">Página Anterior</a>
+  {{/if}}
+  Página {{page}} de {{totalPages}}
+  {{#if hasNextPage}}
+    <a href="{{nextLink}}">Página Siguiente</a>
+  {{/if}}
+</div>
+
+<script>
+  const cartId = "67a7fd0de8b98316acc73e16"; // Reemplaza con el ID real del carrito
+
+  function addToCart(productId) {
+    fetch(`/api/carts/${cartId}/products/${productId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ quantity: 1 })
+    }).then(response => response.json())
+      .then(data => {
+        console.log('Producto agregado al carrito:', data);
+        alert('Producto agregado al carrito');
+      })
+      .catch(error => {
+        console.error('Error al agregar el producto al carrito:', error);
+        alert('Error al agregar el producto al carrito');
+      });
+  }
+</script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/main.js"></script>
